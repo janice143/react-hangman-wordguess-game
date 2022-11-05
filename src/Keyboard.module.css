@@ -1,5 +1,26 @@
 .btn {
+    font-size: 24px;
+    text-transform: capitalize;
     width:100%;
-    aspect-ratio: 1;
-    background-color: red;
+    aspect-ratio: 1 / 1;
+    color:#ff00ff;
+    text-shadow: 0 0 .5rem rgb(234, 1, 255);
+    text-align: center;   
+    border:1px solid black;
+    border-radius: 5px;
+    transition:all 0.07s ease;
+    cursor: pointer;
+}
+
+.btn.correct{
+    background:#ff00ff;
+    color:white;
+}
+.btn.incorrect{
+    opacity: .2;
+    text-shadow:none;
+  }
+.btn:hover:not(:disabled){
+    background:#ff00ff;
+    color:white;
 }

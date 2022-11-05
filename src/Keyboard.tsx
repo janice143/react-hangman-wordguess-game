@@ -28,19 +28,31 @@ const KEYS = [
   "y",
   "z",
 ];
-export default function Keyboard() {
+type KeyboardProps = {
+  addGuessedLetter: (letter: string) => void,
+  incorrectLetters:string[],
+  correctLetters:string[]
+}
+export default function Keyboard({addGuessedLetter,incorrectLetters,correctLetters}:KeyboardProps) {
+  // console.log(addGuessedLetter)
   return (
     <div
       style={{
-        border:"1px solid red",
-        // display: "grid",
-        // gridTemplateColumns: "repeat(auto-fit, minmax(4vmin,1fr))",
-        // gap: "0.5vmin",
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fit, minmax(2rem,1fr))",
+        gap: "6px",
       }}
     >
       {KEYS.map((key) => {
+        const isCorrect = correctLetters.includes(key)
+        const isinCorrect = incorrectLetters.includes(key)
         return (
-          <button className={styles.btn} key={key}>
+          <button 
+          className={`${styles.btn} ${isCorrect ? styles.correct : ""} ${isinCorrect ? styles.incorrect : ""}`} 
+          disabled={isinCorrect || isCorrect}
+          key={key}
+          onClick={()=>addGuessedLetter(key)}
+          >
             {key}
           </button>
         );
