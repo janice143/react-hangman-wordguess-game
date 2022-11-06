@@ -3,27 +3,35 @@ import "./App.css";
 import Hangman from "./Hangman";
 import WordGuess from "./WordGuess";
 import Keyboard from "./Keyboard";
-import GetWord from "./GetWord";
+import ShowMeaning from "./ShowMeaning";
 import wordList from './wordList.json'
 
 function getWord(){
-  // return "somebody"
-  return wordList[Math.floor(Math.random() * wordList.length)]
+  const wordListArray = Object.entries(wordList)
+  // const wordListArray = [...wordList]
+  // console.log(wordListArray)
+  // return "test"
+  let randomWord =  wordListArray[Math.floor(Math.random() * wordListArray.length)]
+  randomWord[0] = randomWord[0].toLowerCase()
+  return randomWord
 }
 function App() {
-  const [wordToGuess, setWordToGuess] = useState(getWord)
-  const [guessedLetters, setGuessedLetters] = useState<string[]>([])
+  const getWordandMeaning = getWord()
+  const [wordToGuess, setWordToGuess] = useState(getWordandMeaning[0])
+  const [meaningToGuess, setMeaningToGuess] = useState(getWordandMeaning[1]['MEANINGS'])
 
+  const [guessedLetters, setGuessedLetters] = useState<string[]>([])
+  // console.log(wordToGuess,meaningToGuess)
   const incorrectLetters = guessedLetters.filter(letter=>!wordToGuess.includes(letter))
   const correctLetters = guessedLetters.filter(letter=>wordToGuess.includes(letter))
-
+  // console.log(incorrectLetters)
   const isLoser = incorrectLetters.length > 5
   const isWinner = wordToGuess.split('').every(letter=>guessedLetters.includes(letter))
   
   // console.log(isLoser,isWinner)
   const addGuessedLetter = useCallback(
     (letter:string)=>{
-      if(isLoser) return
+      if(isLoser || isWinner) return
       setGuessedLetters(curLetters=>[...curLetters,letter])
     },
     [guessedLetters]
@@ -59,7 +67,9 @@ function App() {
       // 重新开局
       e.preventDefault()
       setGuessedLetters([])
-      setWordToGuess(getWord())
+      const getWordandMeaning = getWord()
+      setWordToGuess(getWordandMeaning[0])
+      setMeaningToGuess(getWordandMeaning[1]['MEANINGS'])
     }
     document.addEventListener("keypress",handleKeyPress)
     // 清除effect
@@ -86,12 +96,14 @@ function App() {
         // border: "1px solid red",
       }}
     >
-      <h4>
-        {!isWinner && !isLoser && "Hangman Wordguess Game"}
+      <h4 style={{
+        margin:"10px"
+      }}>
+        {!isWinner && !isLoser && "Hangman Wordguessing Game"}
         {isWinner && "Winner! - refresh to try again"}
         {isLoser && "Nice try! - refresh to try again"}
       </h4>
-      <GetWord />
+      <ShowMeaning meaningToGuess={meaningToGuess}/>
       <Hangman incorrectLetters={incorrectLetters}/>
       <WordGuess 
         wordToGuess={wordToGuess}
@@ -99,13 +111,14 @@ function App() {
         reveal={isLoser}
       />
       <div style={{ 
-        alignSelf: "stretch",
+        width:"100%",
         padding:"20px"
         }}>
         <Keyboard 
         addGuessedLetter = {addGuessedLetter}
         incorrectLetters = {incorrectLetters}
         correctLetters = {correctLetters}
+        disabled={isWinner || isLoser}
         />
       </div>
     </div>

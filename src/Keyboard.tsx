@@ -31,16 +31,17 @@ const KEYS = [
 type KeyboardProps = {
   addGuessedLetter: (letter: string) => void,
   incorrectLetters:string[],
-  correctLetters:string[]
+  correctLetters:string[],
+  disabled?:boolean
 }
-export default function Keyboard({addGuessedLetter,incorrectLetters,correctLetters}:KeyboardProps) {
+export default function Keyboard({addGuessedLetter,incorrectLetters,correctLetters,disabled=false}:KeyboardProps) {
   // console.log(addGuessedLetter)
   return (
     <div
       style={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(2rem,1fr))",
-        gap: "6px",
+        gap: "6px"
       }}
     >
       {KEYS.map((key) => {
@@ -49,7 +50,7 @@ export default function Keyboard({addGuessedLetter,incorrectLetters,correctLette
         return (
           <button 
           className={`${styles.btn} ${isCorrect ? styles.correct : ""} ${isinCorrect ? styles.incorrect : ""}`} 
-          disabled={isinCorrect || isCorrect}
+          disabled={isinCorrect || isCorrect || disabled}
           key={key}
           onClick={()=>addGuessedLetter(key)}
           >
